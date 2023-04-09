@@ -6,7 +6,6 @@ import java.util.*;
 public class RefactoringSample {
   public static String statement(Invoices invoice, Map<String, Play> plays) throws Exception {
     var totalAmount = 0;
-    var volumeCredits = 0;
     var result = "청구 내역 고객명 : " + invoice.customerName + '\n';
 
     for (var perf : invoice.performances) {
@@ -14,6 +13,7 @@ public class RefactoringSample {
       totalAmount += amountFor(perf, plays);
     }
 
+    var volumeCredits = 0;
     for (var perf : invoice.performances) {
       volumeCredits += volumeCreditsFor(plays, perf);
     }
