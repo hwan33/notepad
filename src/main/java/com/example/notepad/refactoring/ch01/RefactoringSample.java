@@ -1,6 +1,5 @@
 package com.example.notepad.refactoring.ch01;
 
-import com.example.notepad.refactoring.ch01.RefactoringSample.Invoice.Performance;
 import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,23 +8,15 @@ import lombok.Setter;
 
 public class RefactoringSample {
 
-  @NoArgsConstructor
-  @AllArgsConstructor
-  @Getter
-  @Setter
-  private static class StatementData {
-    private String customerName;
-    private List<Performance> performances;
-  }
-
   public static String statement(Invoice invoice, Map<String, Play> plays) throws Exception {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
     statementData.setPerformances(invoice.performances);
     return renderPlainText(statementData, plays);
-  } 
-  
-  private static String renderPlainText(StatementData statementData, Map<String,Play> plays) throws Exception {
+  }
+
+  private static String renderPlainText(StatementData statementData, Map<String, Play> plays)
+      throws Exception {
     var result = "청구 내역 고객명 : " + statementData.getCustomerName() + '\n';
 
     for (var perf : statementData.getPerformances()) {
@@ -39,9 +30,10 @@ public class RefactoringSample {
     return result;
   }
 
-  private static int totalAmount(StatementData statementData, Map<String, Play> plays) throws Exception {
+  private static int totalAmount(StatementData statementData, Map<String, Play> plays)
+      throws Exception {
     var result = 0;
-    for (var perf :  statementData.getPerformances()) {
+    for (var perf : statementData.getPerformances()) {
       result += amountFor(perf, plays);
     }
     return result;
@@ -49,7 +41,7 @@ public class RefactoringSample {
 
   private static int totalVolumeCredits(StatementData statementData, Map<String, Play> plays) {
     var result = 0;
-    for (var perf :  statementData.getPerformances()) {
+    for (var perf : statementData.getPerformances()) {
       result += volumeCreditsFor(plays, perf);
     }
     return result;
@@ -106,33 +98,33 @@ public class RefactoringSample {
     System.out.println(statement(invoice, plays));
   }
 
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Getter
+  @Setter
+  private static class StatementData {
+    private String customerName;
+    private List<Performance> performances;
+  }
+
+  @AllArgsConstructor
+  @Getter
   private static class Play {
     private String name;
     private String type;
-
-    public Play(String name, String type) {
-      this.name = name;
-      this.type = type;
-    }
   }
 
+  @AllArgsConstructor
+  @Getter
   static class Invoice {
     private String customerName;
     private List<Performance> performances;
+  }
 
-    public Invoice(String customerName, List<Performance> performances) {
-      this.customerName = customerName;
-      this.performances = performances;
-    }
-
-    static class Performance {
-      private String playId;
-      private int audience;
-
-      public Performance(String playId, int audience) {
-        this.playId = playId;
-        this.audience = audience;
-      }
-    }
+  @AllArgsConstructor
+  @Getter
+  static class Performance {
+    private String playId;
+    private int audience;
   }
 }
