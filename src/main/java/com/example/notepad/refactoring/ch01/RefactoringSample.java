@@ -10,14 +10,13 @@ public class RefactoringSample {
     var result = "청구 내역 고객명 : " + invoice.customerName + '\n';
 
     for (var perf : invoice.performances) {
-      int thisAmount = amountFor(perf, plays);
 
       volumeCredits += Math.max(perf.audience - 30, 0);
       if ("comedy".equals(playFor(plays, perf).type))
         volumeCredits += Math.floor(perf.audience / 5);
 
-      result += playFor(plays, perf).name + ": " + thisAmount + "원, " + perf.audience + "석\n";
-      totalAmount += thisAmount;
+      result += playFor(plays, perf).name + ": " + amountFor(perf, plays) + "원, " + perf.audience + "석\n";
+      totalAmount += amountFor(perf, plays);
     }
 
     result += "총액: " + totalAmount + "원\n";
