@@ -24,7 +24,7 @@ public class RefactoringSample {
 
     for (var perf : statementData.getPerformances()) {
       result +=
-          perf.getPlay().getName() + ": " + amountFor(perf) + "원, " + perf.audience + "석\n";
+          perf.getPlay().getName() + ": " + perf.getAmount() + "원, " + perf.audience + "석\n";
     }
 
     var volumeCredits = totalVolumeCredits(statementData);
@@ -36,7 +36,7 @@ public class RefactoringSample {
   private static int totalAmount(StatementData statementData) {
     var result = 0;
     for (var perf : statementData.getPerformances()) {
-      result += amountFor(perf);
+      result += perf.getAmount();
     }
     return result;
   }
