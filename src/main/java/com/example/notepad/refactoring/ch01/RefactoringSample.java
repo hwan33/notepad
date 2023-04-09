@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 public class RefactoringSample {
@@ -14,6 +15,7 @@ public class RefactoringSample {
     statementData.setCustomerName(invoice.customerName);
     statementData.setPerformances(
         invoice.performances.stream().map(i -> i.createVo(plays, i)).collect(Collectors.toList()));
+    statementData.getPerformances().stream().forEach(i -> i.updateAmount(amountFor(i)));
     return renderPlainText(statementData);
   }
 
@@ -128,15 +130,20 @@ public class RefactoringSample {
     private int audience;
 
     public PerformanceVo createVo(Map<String, Play> plays, Performance performance) {
-      return new PerformanceVo(this.playId, this.audience, playFor(plays, performance));
+      return new PerformanceVo(this.playId, this.audience, playFor(plays, performance), 0);
     }
   }
 
   @AllArgsConstructor
   @Getter
-  record PerformanceVo(
-      String playId,
-      int audience,
-      Play play) {
+  static class PerformanceVo {
+    private String playId;
+    private int audience;
+    private Play play;
+    private int amount;
+
+    public void updateAmount(int amount) {
+      this.amount = amount;
+    }
   }
 }
