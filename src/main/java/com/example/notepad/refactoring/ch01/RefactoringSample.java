@@ -1,6 +1,7 @@
 package com.example.notepad.refactoring.ch01;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,8 @@ public class RefactoringSample {
   public static String statement(Invoice invoice, Map<String, Play> plays) throws Exception {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
-    statementData.setPerformances(invoice.performances);
+    statementData.setPerformances(
+        invoice.performances.stream().map(Performance::getClone).collect(Collectors.toList()));
     return renderPlainText(statementData, plays);
   }
 
@@ -126,5 +128,9 @@ public class RefactoringSample {
   static class Performance {
     private String playId;
     private int audience;
+
+    public Performance getClone() {
+      return new Performance(this.playId, this.audience);
+    }
   }
 }
