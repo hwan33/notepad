@@ -14,42 +14,42 @@ public class RefactoringSample {
     statementData.setCustomerName(invoice.customerName);
     statementData.setPerformances(
         invoice.performances.stream().map(i -> i.createVo(plays, i)).collect(Collectors.toList()));
-    return renderPlainText(statementData, plays);
+    return renderPlainText(statementData);
   }
 
-  private static String renderPlainText(StatementData statementData, Map<String, Play> plays)
+  private static String renderPlainText(StatementData statementData)
       throws Exception {
     var result = "청구 내역 고객명 : " + statementData.getCustomerName() + '\n';
 
     for (var perf : statementData.getPerformances()) {
       result +=
-          perf.getPlay().getName() + ": " + amountFor(perf, plays) + "원, " + perf.audience + "석\n";
+          perf.getPlay().getName() + ": " + amountFor(perf) + "원, " + perf.audience + "석\n";
     }
 
-    var volumeCredits = totalVolumeCredits(statementData, plays);
-    result += "총액: " + totalAmount(statementData, plays) + "원\n";
+    var volumeCredits = totalVolumeCredits(statementData);
+    result += "총액: " + totalAmount(statementData) + "원\n";
     result += "적립 포인트: " + volumeCredits + "점\n";
     return result;
   }
 
-  private static int totalAmount(StatementData statementData, Map<String, Play> plays)
+  private static int totalAmount(StatementData statementData)
       throws Exception {
     var result = 0;
     for (var perf : statementData.getPerformances()) {
-      result += amountFor(perf, plays);
+      result += amountFor(perf);
     }
     return result;
   }
 
-  private static int totalVolumeCredits(StatementData statementData, Map<String, Play> plays) {
+  private static int totalVolumeCredits(StatementData statementData) {
     var result = 0;
     for (var perf : statementData.getPerformances()) {
-      result += volumeCreditsFor(plays, perf);
+      result += volumeCreditsFor(perf);
     }
     return result;
   }
 
-  private static int volumeCreditsFor(Map<String, Play> plays, PerformanceVo perf) {
+  private static int volumeCreditsFor(PerformanceVo perf) {
     int result = 0;
     result += Math.max(perf.audience - 30, 0);
     if ("comedy".equals(perf.getPlay().getType())) {
@@ -58,16 +58,11 @@ public class RefactoringSample {
     return result;
   }
 
-  private static Play playFor(Map<String, Play> plays, PerformanceVo perf) {
-    return plays.get(perf.playId);
-  }
-
-
   private static Play playFor(Map<String, Play> plays, Performance perf) {
     return plays.get(perf.playId);
   }
 
-  private static int amountFor(PerformanceVo perf, Map<String, Play> plays) throws Exception {
+  private static int amountFor(PerformanceVo perf) throws Exception {
     var result = 0;
 
     switch (perf.getPlay().getType()) {
