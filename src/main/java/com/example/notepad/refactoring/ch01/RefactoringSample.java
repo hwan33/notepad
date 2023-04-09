@@ -13,9 +13,8 @@ public class RefactoringSample {
   public static String statement(Invoice invoice, Map<String, Play> plays) {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
-    statementData.setPerformances(
-        invoice.performances.stream().map(i -> i.createVo(plays, i)).collect(Collectors.toList()));
-    statementData.getPerformances().stream().forEach(i -> i.updateAmount(amountFor(i)));
+    statementData.setPerformances(invoice.performances.stream().map(i -> i.createVo(plays, i)).toList());
+    statementData.getPerformances().forEach(i -> i.updateAmount(amountFor(i)));
     return renderPlainText(statementData);
   }
 
@@ -53,7 +52,7 @@ public class RefactoringSample {
     int result = 0;
     result += Math.max(perf.audience - 30, 0);
     if ("comedy".equals(perf.getPlay().getType())) {
-      result += Math.floor(perf.audience / 5);
+      result += perf.audience / 5;
     }
     return result;
   }
@@ -66,21 +65,20 @@ public class RefactoringSample {
     var result = 0;
 
     switch (perf.getPlay().getType()) {
-      case "tragedy":
+      case "tragedy" -> {
         result = 40000;
         if (perf.audience > 30) {
           result += 1000 * (perf.audience - 30);
         }
-        break;
-      case "comedy":
+      }
+      case "comedy" -> {
         result = 30000;
         if (perf.audience > 20) {
           result += 10000 + 500 * (perf.audience - 20);
         }
         result += 300 * perf.audience;
-        break;
-      default:
-        throw new RuntimeException("알 수 없는 장르");
+      }
+      default -> throw new RuntimeException("알 수 없는 장르");
     }
     return result;
   }
