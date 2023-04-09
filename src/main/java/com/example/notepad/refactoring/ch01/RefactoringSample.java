@@ -14,8 +14,6 @@ public class RefactoringSample {
     statementData.setCustomerName(invoice.customerName);
     statementData.setPerformances(
         invoice.performances.stream().map(i -> i.createVo(plays, i)).collect(Collectors.toList()));
-    statementData.setAmount(
-        statementData.getPerformances().stream().map(i -> amountFor(i)).collect(Collectors.toList()));
     return renderPlainText(statementData);
   }
 
@@ -107,7 +105,6 @@ public class RefactoringSample {
   private static class StatementData {
     private String customerName;
     private List<PerformanceVo> performances;
-    private List<Integer> amount;
   }
 
   @AllArgsConstructor
