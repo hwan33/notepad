@@ -12,15 +12,18 @@ public class RefactoringSample {
           playFor(plays, perf).name + ": " + amountFor(perf, plays) + "원, " + perf.audience + "석\n";
     }
 
+    var volumeCredits = totalVolumeCredits(invoice, plays);
+    result += "총액: " + totalAmount(invoice, plays) + "원\n";
+    result += "적립 포인트: " + volumeCredits + "점\n";
+    return result;
+  }
+
+  private static int totalAmount(Invoices invoice, Map<String, Play> plays) throws Exception {
     var totalAmount = 0;
     for (var perf : invoice.performances) {
       totalAmount += amountFor(perf, plays);
     }
-
-    var volumeCredits = totalVolumeCredits(invoice, plays);
-    result += "총액: " + totalAmount + "원\n";
-    result += "적립 포인트: " + volumeCredits + "점\n";
-    return result;
+    return totalAmount;
   }
 
   private static int totalVolumeCredits(Invoices invoice, Map<String, Play> plays) {
