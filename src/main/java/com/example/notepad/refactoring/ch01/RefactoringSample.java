@@ -36,9 +36,8 @@ public class RefactoringSample {
           .append("석\n");
     }
 
-    var volumeCredits = totalVolumeCredits(statementData);
-    result.append("총액: ").append(totalAmount(statementData)).append("원\n");
-    result.append("적립 포인트: ").append(volumeCredits).append("점\n");
+    result.append("총액: ").append(statementData.getTotalAmount()).append("원\n");
+    result.append("적립 포인트: ").append(statementData.getTotalVolumeCredits()).append("점\n");
     return result.toString();
   }
 
