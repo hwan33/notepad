@@ -1,11 +1,9 @@
 package com.example.notepad.refactoring.ch01;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 public class RefactoringSample {
@@ -13,23 +11,29 @@ public class RefactoringSample {
   public static String statement(Invoice invoice, Map<String, Play> plays) {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
-    statementData.setPerformances(invoice.performances.stream().map(i -> i.createVo(plays, i)).toList());
+    statementData.setPerformances(
+        invoice.performances.stream().map(i -> i.createVo(plays, i)).toList());
     statementData.getPerformances().forEach(i -> i.updateAmount(amountFor(i)));
     return renderPlainText(statementData);
   }
 
   private static String renderPlainText(StatementData statementData) {
-    var result = "청구 내역 고객명 : " + statementData.getCustomerName() + '\n';
+    StringBuilder result =
+        new StringBuilder("청구 내역 고객명 : " + statementData.getCustomerName() + '\n');
 
     for (var perf : statementData.getPerformances()) {
-      result +=
-          perf.getPlay().getName() + ": " + perf.getAmount() + "원, " + perf.audience + "석\n";
+      result.append(perf.getPlay().getName())
+          .append(": ")
+          .append(perf.getAmount())
+          .append("원, ")
+          .append(perf.audience)
+          .append("석\n");
     }
 
     var volumeCredits = totalVolumeCredits(statementData);
-    result += "총액: " + totalAmount(statementData) + "원\n";
-    result += "적립 포인트: " + volumeCredits + "점\n";
-    return result;
+    result.append("총액: ").append(totalAmount(statementData)).append("원\n");
+    result.append("적립 포인트: ").append(volumeCredits).append("점\n");
+    return result.toString();
   }
 
   private static int totalAmount(StatementData statementData) {
@@ -128,7 +132,7 @@ public class RefactoringSample {
     private int audience;
 
     public PerformanceVo createVo(Map<String, Play> plays, Performance performance) {
-      return new PerformanceVo(this.playId, this.audience, playFor(plays, performance), 0);
+      return new PerformanceVo(this.playId, this.audience, playFor(plays, performance), 0, 0);
     }
   }
 
@@ -139,9 +143,14 @@ public class RefactoringSample {
     private int audience;
     private Play play;
     private int amount;
+    private int volumeCredits;
 
     public void updateAmount(int amount) {
       this.amount = amount;
+    }
+
+    public void updateVolumeCredits(int volumeCredits) {
+      this.volumeCredits = volumeCredits;
     }
   }
 }
