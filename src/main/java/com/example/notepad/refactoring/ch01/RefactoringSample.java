@@ -11,12 +11,17 @@ public class RefactoringSample {
   public static String statement(Invoice invoice, Map<String, Play> plays) {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
+    updatePerformance(invoice, plays, statementData);
+    statementData.setTotalAmount(totalAmount(statementData));
+    statementData.setTotalVolumeCredits(totalVolumeCredits(statementData));
+    return renderPlainText(statementData);
+  } 
+  
+  private static void updatePerformance(Invoice invoice, Map<String,Play> plays, StatementData statementData) {
     statementData.setPerformances(
         invoice.performances.stream().map(i -> i.createVo(plays, i)).toList());
     statementData.getPerformances().forEach(i -> i.updateAmount(amountFor(i)));
-    statementData.getPerformances().forEach(i -> i.updateVolumeCredits(volumeCreditsFor(i)));
-    return renderPlainText(statementData);
-  }
+    statementData.getPerformances().forEach(i -> i.updateVolumeCredits(volumeCreditsFor(i)));}
 
   private static String renderPlainText(StatementData statementData) {
     StringBuilder result =
@@ -110,6 +115,8 @@ public class RefactoringSample {
   private static class StatementData {
     private String customerName;
     private List<PerformanceVo> performances;
+    private int totalAmount;
+    private int totalVolumeCredits;
   }
 
   @AllArgsConstructor
