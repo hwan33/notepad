@@ -5,6 +5,10 @@ import java.util.*;
 
 public class RefactoringSample {
   public static String statement(Invoices invoice, Map<String, Play> plays) throws Exception {
+    return renderPlainText(invoice, plays);
+  } 
+  
+  private static String renderPlainText(Invoices invoice, Map<String,Play> plays) throws Exception {
     var result = "청구 내역 고객명 : " + invoice.customerName + '\n';
 
     for (var perf : invoice.performances) {
