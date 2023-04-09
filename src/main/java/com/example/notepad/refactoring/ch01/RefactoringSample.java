@@ -9,7 +9,7 @@ import lombok.Setter;
 
 public class RefactoringSample {
 
-  public static String statement(Invoice invoice, Map<String, Play> plays) throws Exception {
+  public static String statement(Invoice invoice, Map<String, Play> plays) {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
     statementData.setPerformances(
@@ -17,8 +17,7 @@ public class RefactoringSample {
     return renderPlainText(statementData);
   }
 
-  private static String renderPlainText(StatementData statementData)
-      throws Exception {
+  private static String renderPlainText(StatementData statementData) {
     var result = "청구 내역 고객명 : " + statementData.getCustomerName() + '\n';
 
     for (var perf : statementData.getPerformances()) {
@@ -32,8 +31,7 @@ public class RefactoringSample {
     return result;
   }
 
-  private static int totalAmount(StatementData statementData)
-      throws Exception {
+  private static int totalAmount(StatementData statementData) {
     var result = 0;
     for (var perf : statementData.getPerformances()) {
       result += amountFor(perf);
@@ -62,7 +60,7 @@ public class RefactoringSample {
     return plays.get(perf.playId);
   }
 
-  private static int amountFor(PerformanceVo perf) throws Exception {
+  private static int amountFor(PerformanceVo perf) {
     var result = 0;
 
     switch (perf.getPlay().getType()) {
@@ -80,12 +78,35 @@ public class RefactoringSample {
         result += 300 * perf.audience;
         break;
       default:
-        throw new Exception("알 수 없는 장르");
+        throw new RuntimeException("알 수 없는 장르");
     }
     return result;
   }
 
-  public static void main(String[] args) throws Exception {
+  private static int amountFor(Performance perf, Play play) {
+    var result = 0;
+
+    switch (play.getType()) {
+      case "tragedy":
+        result = 40000;
+        if (perf.audience > 30) {
+          result += 1000 * (perf.audience - 30);
+        }
+        break;
+      case "comedy":
+        result = 30000;
+        if (perf.audience > 20) {
+          result += 10000 + 500 * (perf.audience - 20);
+        }
+        result += 300 * perf.audience;
+        break;
+      default:
+        throw new RuntimeException("알 수 없는 장르");
+    }
+    return result;
+  }
+
+  public static void main(String[] args) {
     List<Performance> performances = new ArrayList<>();
     performances.add(new Performance("hamlet", 55));
     performances.add(new Performance("as-like", 35));
@@ -130,7 +151,7 @@ public class RefactoringSample {
     private int audience;
 
     public PerformanceVo createVo(Map<String, Play> plays, Performance performance) {
-      return new PerformanceVo(this.playId, this.audience, playFor(plays, performance));
+      return new PerformanceVo(this.playId, this.audience, playFor(plays, performance), amountFor(performance, playFor(plays, performance)));
     }
   }
 
@@ -139,6 +160,7 @@ public class RefactoringSample {
   record PerformanceVo(
       String playId,
       int audience,
-      Play play) {
+      Play play,
+      int amount) {
   }
 }
