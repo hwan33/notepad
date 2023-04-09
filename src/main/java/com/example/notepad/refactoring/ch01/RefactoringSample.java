@@ -11,6 +11,9 @@ public class RefactoringSample {
     for (var perf : invoice.performances) {
       result +=
           playFor(plays, perf).name + ": " + amountFor(perf, plays) + "원, " + perf.audience + "석\n";
+    }
+
+    for (var perf : invoice.performances) {
       totalAmount += amountFor(perf, plays);
     }
 
