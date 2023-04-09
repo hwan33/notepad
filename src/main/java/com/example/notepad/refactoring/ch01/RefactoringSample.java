@@ -27,11 +27,11 @@ public class RefactoringSample {
   }
 
   private static int totalVolumeCredits(Invoices invoice, Map<String, Play> plays) {
-    var volumeCredits = 0;
+    var result = 0;
     for (var perf : invoice.performances) {
-      volumeCredits += volumeCreditsFor(plays, perf);
+      result += volumeCreditsFor(plays, perf);
     }
-    return volumeCredits;
+    return result;
   }
 
   private static int volumeCreditsFor(Map<String, Play> plays, Performance perf) {
