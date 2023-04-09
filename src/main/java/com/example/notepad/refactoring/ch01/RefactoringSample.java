@@ -9,26 +9,33 @@ import lombok.Setter;
 public class RefactoringSample {
 
   public static String statement(Invoice invoice, Map<String, Play> plays) {
+    return renderPlainText(createStatementData(invoice, plays));
+  }
+
+  private static StatementData createStatementData(Invoice invoice, Map<String, Play> plays) {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
     updatePerformance(invoice, plays, statementData);
     statementData.setTotalAmount(totalAmount(statementData));
     statementData.setTotalVolumeCredits(totalVolumeCredits(statementData));
-    return renderPlainText(statementData);
-  } 
-  
-  private static void updatePerformance(Invoice invoice, Map<String,Play> plays, StatementData statementData) {
+    return statementData;
+  }
+
+  private static void updatePerformance(
+      Invoice invoice, Map<String, Play> plays, StatementData statementData) {
     statementData.setPerformances(
         invoice.performances.stream().map(i -> i.createVo(plays, i)).toList());
     statementData.getPerformances().forEach(i -> i.updateAmount(amountFor(i)));
-    statementData.getPerformances().forEach(i -> i.updateVolumeCredits(volumeCreditsFor(i)));}
+    statementData.getPerformances().forEach(i -> i.updateVolumeCredits(volumeCreditsFor(i)));
+  }
 
   private static String renderPlainText(StatementData statementData) {
     StringBuilder result =
         new StringBuilder("청구 내역 고객명 : " + statementData.getCustomerName() + '\n');
 
     for (var perf : statementData.getPerformances()) {
-      result.append(perf.getPlay().getName())
+      result
+          .append(perf.getPlay().getName())
           .append(": ")
           .append(perf.getAmount())
           .append("원, ")
@@ -42,11 +49,17 @@ public class RefactoringSample {
   }
 
   private static int totalAmount(StatementData statementData) {
-    return statementData.getPerformances().stream().map(PerformanceVo::getAmount).mapToInt(i -> i).sum();
+    return statementData.getPerformances().stream()
+        .map(PerformanceVo::getAmount)
+        .mapToInt(i -> i)
+        .sum();
   }
 
   private static int totalVolumeCredits(StatementData statementData) {
-    return statementData.getPerformances().stream().map(PerformanceVo::getVolumeCredits).mapToInt(i -> i).sum();
+    return statementData.getPerformances().stream()
+        .map(PerformanceVo::getVolumeCredits)
+        .mapToInt(i -> i)
+        .sum();
   }
 
   private static int volumeCreditsFor(PerformanceVo perf) {
