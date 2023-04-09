@@ -19,11 +19,11 @@ public class RefactoringSample {
   }
 
   private static int totalAmount(Invoices invoice, Map<String, Play> plays) throws Exception {
-    var totalAmount = 0;
+    var result = 0;
     for (var perf : invoice.performances) {
-      totalAmount += amountFor(perf, plays);
+      result += amountFor(perf, plays);
     }
-    return totalAmount;
+    return result;
   }
 
   private static int totalVolumeCredits(Invoices invoice, Map<String, Play> plays) {
