@@ -1,14 +1,29 @@
 package com.example.notepad.refactoring.ch01;
 
-import com.example.notepad.refactoring.ch01.RefactoringSample.Invoices.Performance;
+import com.example.notepad.refactoring.ch01.RefactoringSample.Invoice.Performance;
 import java.util.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class RefactoringSample {
-  public static String statement(Invoices invoice, Map<String, Play> plays) throws Exception {
-    return renderPlainText(invoice, plays);
+
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Getter
+  @Setter
+  private static class StatementData {
+    private String customerName;
+  }
+
+  public static String statement(Invoice invoice, Map<String, Play> plays) throws Exception {
+    var statementData = new StatementData();
+    statementData.setCustomerName(invoice.customerName);
+    return renderPlainText(statementData, invoice, plays);
   } 
   
-  private static String renderPlainText(Invoices invoice, Map<String,Play> plays) throws Exception {
+  private static String renderPlainText(StatementData statementData, Invoice invoice, Map<String,Play> plays) throws Exception {
     var result = "청구 내역 고객명 : " + invoice.customerName + '\n';
 
     for (var perf : invoice.performances) {
@@ -22,7 +37,7 @@ public class RefactoringSample {
     return result;
   }
 
-  private static int totalAmount(Invoices invoice, Map<String, Play> plays) throws Exception {
+  private static int totalAmount(Invoice invoice, Map<String, Play> plays) throws Exception {
     var result = 0;
     for (var perf : invoice.performances) {
       result += amountFor(perf, plays);
@@ -30,7 +45,7 @@ public class RefactoringSample {
     return result;
   }
 
-  private static int totalVolumeCredits(Invoices invoice, Map<String, Play> plays) {
+  private static int totalVolumeCredits(Invoice invoice, Map<String, Play> plays) {
     var result = 0;
     for (var perf : invoice.performances) {
       result += volumeCreditsFor(plays, perf);
@@ -80,13 +95,13 @@ public class RefactoringSample {
     performances.add(new Performance("as-like", 35));
     performances.add(new Performance("othello", 40));
 
-    Invoices invoices = new Invoices("BigCo", performances);
+    Invoice invoice = new Invoice("BigCo", performances);
     Map<String, Play> plays = new HashMap<>();
     plays.put("hamlet", new Play("Hamlet", "tragedy"));
     plays.put("as-like", new Play("As You Like It", "comedy"));
     plays.put("othello", new Play("Othello", "tragedy"));
 
-    System.out.println(statement(invoices, plays));
+    System.out.println(statement(invoice, plays));
   }
 
   private static class Play {
@@ -99,11 +114,11 @@ public class RefactoringSample {
     }
   }
 
-  static class Invoices {
+  static class Invoice {
     private String customerName;
     private List<Performance> performances;
 
-    public Invoices(String customerName, List<Performance> performances) {
+    public Invoice(String customerName, List<Performance> performances) {
       this.customerName = customerName;
       this.performances = performances;
     }
