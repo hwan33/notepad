@@ -1,6 +1,6 @@
 package com.example.notepad.refactoring.ch01;
 
-import com.example.notepad.refactoring.ch01.RefactoringSample.Invoices.Performances;
+import com.example.notepad.refactoring.ch01.RefactoringSample.Invoices.Performance;
 import java.util.*;
 
 public class RefactoringSample {
@@ -25,7 +25,7 @@ public class RefactoringSample {
     return result;
   }
 
-  private static int amountFor(Performances perf, Play play) throws Exception {
+  private static int amountFor(Performance perf, Play play) throws Exception {
     var result = 0;
 
     switch (play.type) {
@@ -49,10 +49,10 @@ public class RefactoringSample {
   }
 
   public static void main(String[] args) throws Exception {
-    List<Invoices.Performances> performances = new ArrayList<>();
-    performances.add(new Invoices.Performances("hamlet", 55));
-    performances.add(new Invoices.Performances("as-like", 35));
-    performances.add(new Invoices.Performances("othello", 40));
+    List<Performance> performances = new ArrayList<>();
+    performances.add(new Performance("hamlet", 55));
+    performances.add(new Performance("as-like", 35));
+    performances.add(new Performance("othello", 40));
 
     Invoices invoices = new Invoices("BigCo", performances);
     Map<String, Play> plays = new HashMap<>();
@@ -75,18 +75,18 @@ public class RefactoringSample {
 
   static class Invoices {
     private String customerName;
-    private List<Performances> performances;
+    private List<Performance> performances;
 
-    public Invoices(String customerName, List<Performances> performances) {
+    public Invoices(String customerName, List<Performance> performances) {
       this.customerName = customerName;
       this.performances = performances;
     }
 
-    static class Performances {
+    static class Performance {
       private String playId;
       private int audience;
 
-      public Performances(String playId, int audience) {
+      public Performance(String playId, int audience) {
         this.playId = playId;
         this.audience = audience;
       }
