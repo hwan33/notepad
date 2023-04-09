@@ -14,6 +14,7 @@ public class RefactoringSample {
     statementData.setPerformances(
         invoice.performances.stream().map(i -> i.createVo(plays, i)).toList());
     statementData.getPerformances().forEach(i -> i.updateAmount(amountFor(i)));
+    statementData.getPerformances().forEach(i -> i.updateVolumeCredits(volumeCreditsFor(i)));
     return renderPlainText(statementData);
   }
 
