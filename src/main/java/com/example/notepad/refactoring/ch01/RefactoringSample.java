@@ -23,7 +23,7 @@ public class RefactoringSample {
 
     for (var perf : statementData.getPerformances()) {
       result +=
-          playFor(plays, perf).name + ": " + amountFor(perf, plays) + "원, " + perf.audience + "석\n";
+          perf.getPlay().getName() + ": " + amountFor(perf, plays) + "원, " + perf.audience + "석\n";
     }
 
     var volumeCredits = totalVolumeCredits(statementData, plays);
@@ -52,7 +52,7 @@ public class RefactoringSample {
   private static int volumeCreditsFor(Map<String, Play> plays, PerformanceVo perf) {
     int result = 0;
     result += Math.max(perf.audience - 30, 0);
-    if ("comedy".equals(playFor(plays, perf).type)) {
+    if ("comedy".equals(perf.getPlay().getType())) {
       result += Math.floor(perf.audience / 5);
     }
     return result;
@@ -70,7 +70,7 @@ public class RefactoringSample {
   private static int amountFor(PerformanceVo perf, Map<String, Play> plays) throws Exception {
     var result = 0;
 
-    switch (playFor(plays, perf).type) {
+    switch (perf.getPlay().getType()) {
       case "tragedy":
         result = 40000;
         if (perf.audience > 30) {
