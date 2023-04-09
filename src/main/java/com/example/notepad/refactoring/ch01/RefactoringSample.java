@@ -48,7 +48,7 @@ public class RefactoringSample {
   private static int totalVolumeCredits(StatementData statementData) {
     var result = 0;
     for (var perf : statementData.getPerformances()) {
-      result += volumeCreditsFor(perf);
+      result += perf.getVolumeCredits();
     }
     return result;
   }
