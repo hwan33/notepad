@@ -42,19 +42,11 @@ public class RefactoringSample {
   }
 
   private static int totalAmount(StatementData statementData) {
-    var result = 0;
-    for (var perf : statementData.getPerformances()) {
-      result += perf.getAmount();
-    }
-    return result;
+    return statementData.getPerformances().stream().map(PerformanceVo::getAmount).mapToInt(i -> i).sum();
   }
 
   private static int totalVolumeCredits(StatementData statementData) {
-    var result = 0;
-    for (var perf : statementData.getPerformances()) {
-      result += perf.getVolumeCredits();
-    }
-    return result;
+    return statementData.getPerformances().stream().map(PerformanceVo::getVolumeCredits).mapToInt(i -> i).sum();
   }
 
   private static int volumeCreditsFor(PerformanceVo perf) {
