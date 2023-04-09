@@ -10,7 +10,7 @@ public class RefactoringSample {
     var result = "청구 내역 고객명 : " + invoice.customerName + '\n';
 
     for (var perf : invoice.performances) {
-      Play play = plays.get(perf.playId);
+      Play play = playFor(plays, perf);
       int thisAmount = amountFor(perf, play);
 
       volumeCredits += Math.max(perf.audience - 30, 0);
@@ -25,22 +25,26 @@ public class RefactoringSample {
     return result;
   }
 
+  private static Play playFor(Map<String, Play> plays, Performance perf) {
+    return plays.get(perf.playId);
+  }
+
   private static int amountFor(Performance perf, Play play) throws Exception {
     var result = 0;
 
     switch (play.type) {
       case "tragedy":
-          result = 40000;
+        result = 40000;
         if (perf.audience > 30) {
-            result += 1000 * (perf.audience - 30);
+          result += 1000 * (perf.audience - 30);
         }
         break;
       case "comedy":
-          result = 30000;
+        result = 30000;
         if (perf.audience > 20) {
-            result += 10000 + 500 * (perf.audience - 20);
+          result += 10000 + 500 * (perf.audience - 20);
         }
-          result += 300 * perf.audience;
+        result += 300 * perf.audience;
         break;
       default:
         throw new Exception("알 수 없는 장르");
