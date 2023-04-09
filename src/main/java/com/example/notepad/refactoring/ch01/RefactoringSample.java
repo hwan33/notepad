@@ -13,7 +13,7 @@ public class RefactoringSample {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
     statementData.setPerformances(
-        invoice.performances.stream().map(Performance::getClone).collect(Collectors.toList()));
+        invoice.performances.stream().map(Performance::createVo).collect(Collectors.toList()));
     return renderPlainText(statementData, plays);
   }
 
@@ -49,7 +49,7 @@ public class RefactoringSample {
     return result;
   }
 
-  private static int volumeCreditsFor(Map<String, Play> plays, Performance perf) {
+  private static int volumeCreditsFor(Map<String, Play> plays, PerformanceVo perf) {
     int result = 0;
     result += Math.max(perf.audience - 30, 0);
     if ("comedy".equals(playFor(plays, perf).type)) {
@@ -58,11 +58,11 @@ public class RefactoringSample {
     return result;
   }
 
-  private static Play playFor(Map<String, Play> plays, Performance perf) {
+  private static Play playFor(Map<String, Play> plays, PerformanceVo perf) {
     return plays.get(perf.playId);
   }
 
-  private static int amountFor(Performance perf, Map<String, Play> plays) throws Exception {
+  private static int amountFor(PerformanceVo perf, Map<String, Play> plays) throws Exception {
     var result = 0;
 
     switch (playFor(plays, perf).type) {
@@ -106,7 +106,7 @@ public class RefactoringSample {
   @Setter
   private static class StatementData {
     private String customerName;
-    private List<Performance> performances;
+    private List<PerformanceVo> performances;
   }
 
   @AllArgsConstructor
@@ -129,8 +129,13 @@ public class RefactoringSample {
     private String playId;
     private int audience;
 
-    public Performance getClone() {
-      return new Performance(this.playId, this.audience);
+    public PerformanceVo createVo() {
+      return new PerformanceVo(this.playId, this.audience);
     }
+  }
+
+  @AllArgsConstructor
+  @Getter
+  record PerformanceVo(String playId,int audience) {
   }
 }
