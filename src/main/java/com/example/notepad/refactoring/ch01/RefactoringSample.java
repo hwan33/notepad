@@ -15,39 +15,41 @@ public class RefactoringSample {
   @Setter
   private static class StatementData {
     private String customerName;
+    private List<Performance> performances;
   }
 
   public static String statement(Invoice invoice, Map<String, Play> plays) throws Exception {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
-    return renderPlainText(statementData, invoice, plays);
+    statementData.setPerformances(invoice.performances);
+    return renderPlainText(statementData, plays);
   } 
   
-  private static String renderPlainText(StatementData statementData, Invoice invoice, Map<String,Play> plays) throws Exception {
-    var result = "청구 내역 고객명 : " + invoice.customerName + '\n';
+  private static String renderPlainText(StatementData statementData, Map<String,Play> plays) throws Exception {
+    var result = "청구 내역 고객명 : " + statementData.getCustomerName() + '\n';
 
-    for (var perf : invoice.performances) {
+    for (var perf : statementData.getPerformances()) {
       result +=
           playFor(plays, perf).name + ": " + amountFor(perf, plays) + "원, " + perf.audience + "석\n";
     }
 
-    var volumeCredits = totalVolumeCredits(invoice, plays);
-    result += "총액: " + totalAmount(invoice, plays) + "원\n";
+    var volumeCredits = totalVolumeCredits(statementData, plays);
+    result += "총액: " + totalAmount(statementData, plays) + "원\n";
     result += "적립 포인트: " + volumeCredits + "점\n";
     return result;
   }
 
-  private static int totalAmount(Invoice invoice, Map<String, Play> plays) throws Exception {
+  private static int totalAmount(StatementData statementData, Map<String, Play> plays) throws Exception {
     var result = 0;
-    for (var perf : invoice.performances) {
+    for (var perf :  statementData.getPerformances()) {
       result += amountFor(perf, plays);
     }
     return result;
   }
 
-  private static int totalVolumeCredits(Invoice invoice, Map<String, Play> plays) {
+  private static int totalVolumeCredits(StatementData statementData, Map<String, Play> plays) {
     var result = 0;
-    for (var perf : invoice.performances) {
+    for (var perf :  statementData.getPerformances()) {
       result += volumeCreditsFor(plays, perf);
     }
     return result;
