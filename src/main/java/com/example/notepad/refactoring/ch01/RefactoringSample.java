@@ -22,12 +22,12 @@ public class RefactoringSample {
   }
 
   private static int volumeCreditsFor(Map<String, Play> plays, Performance perf) {
-    int volumeCredits = 0;
-    volumeCredits += Math.max(perf.audience - 30, 0);
+    int result = 0;
+    result += Math.max(perf.audience - 30, 0);
     if ("comedy".equals(playFor(plays, perf).type)) {
-      volumeCredits += Math.floor(perf.audience / 5);
+      result += Math.floor(perf.audience / 5);
     }
-    return volumeCredits;
+    return result;
   }
 
   private static Play playFor(Map<String, Play> plays, Performance perf) {
