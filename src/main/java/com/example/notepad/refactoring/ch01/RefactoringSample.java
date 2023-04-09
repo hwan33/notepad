@@ -13,7 +13,7 @@ public class RefactoringSample {
     var statementData = new StatementData();
     statementData.setCustomerName(invoice.customerName);
     statementData.setPerformances(
-        invoice.performances.stream().map(Performance::createVo).collect(Collectors.toList()));
+        invoice.performances.stream().map(i -> i.createVo(plays, i)).collect(Collectors.toList()));
     return renderPlainText(statementData, plays);
   }
 
@@ -59,6 +59,11 @@ public class RefactoringSample {
   }
 
   private static Play playFor(Map<String, Play> plays, PerformanceVo perf) {
+    return plays.get(perf.playId);
+  }
+
+
+  private static Play playFor(Map<String, Play> plays, Performance perf) {
     return plays.get(perf.playId);
   }
 
@@ -129,13 +134,16 @@ public class RefactoringSample {
     private String playId;
     private int audience;
 
-    public PerformanceVo createVo() {
-      return new PerformanceVo(this.playId, this.audience);
+    public PerformanceVo createVo(Map<String, Play> plays, Performance performance) {
+      return new PerformanceVo(this.playId, this.audience, playFor(plays, performance));
     }
   }
 
   @AllArgsConstructor
   @Getter
-  record PerformanceVo(String playId,int audience) {
+  record PerformanceVo(
+      String playId,
+      int audience,
+      Play play) {
   }
 }
