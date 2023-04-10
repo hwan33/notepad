@@ -25,8 +25,12 @@ public class RefactoringSample {
       Invoice invoice, Map<String, Play> plays, StatementData statementData) {
     statementData.setPerformances(
         invoice.performances.stream().map(i -> i.createVo(plays, i)).toList());
-    statementData.getPerformances().forEach(i -> i.updateAmount(PerformanceCalculator.amountFor(i)));
-    statementData.getPerformances().forEach(i -> i.updateVolumeCredits(PerformanceCalculator.volumeCreditsFor(i)));
+    statementData
+        .getPerformances()
+        .forEach(i -> i.updateAmount(PerformanceCalculator.amountFor(i)));
+    statementData
+        .getPerformances()
+        .forEach(i -> i.updateVolumeCredits(PerformanceCalculator.volumeCreditsFor(i)));
   }
 
   private static String renderPlainText(StatementData statementData) {
@@ -109,7 +113,8 @@ public class RefactoringSample {
     private int audience;
 
     public PerformanceVo createVo(Map<String, Play> plays, Performance performance) {
-      return new PerformanceVo(this.playId, this.audience, PerformanceCalculator.playFor(plays, performance), 0, 0);
+      return new PerformanceVo(
+          this.playId, this.audience, PerformanceCalculator.playFor(plays, performance), 0, 0);
     }
   }
 
@@ -146,22 +151,15 @@ public class RefactoringSample {
     }
 
     static int amountFor(PerformanceVo perf) {
-      var result = 0;
-
       switch (perf.getPlay().getType()) {
         case "tragedy" -> {
           return TragedyCalculator.amountFor(perf);
         }
         case "comedy" -> {
-          result = 30000;
-          if (perf.audience > 20) {
-            result += 10000 + 500 * (perf.audience - 20);
-          }
-          result += 300 * perf.audience;
+          return ComedyCalculator.amountFor(perf);
         }
         default -> throw new RuntimeException("알 수 없는 장르");
       }
-      return result;
     }
   }
 
@@ -175,6 +173,12 @@ public class RefactoringSample {
   }
 
   static class ComedyCalculator extends PerformanceCalculator {
-
+    static int amountFor(PerformanceVo perf) {
+      var result = 30000;
+      if (perf.audience > 20) {
+        result += 10000 + 500 * (perf.audience - 20);
+      }
+      return result + 300 * perf.audience;
+    }
   }
 }
