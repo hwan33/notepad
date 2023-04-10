@@ -25,8 +25,8 @@ public class RefactoringSample {
       Invoice invoice, Map<String, Play> plays, StatementData statementData) {
     statementData.setPerformances(
         invoice.performances.stream().map(i -> i.createVo(plays, i)).toList());
-    statementData.getPerformances().forEach(i -> i.updateAmount(amountFor(i)));
-    statementData.getPerformances().forEach(i -> i.updateVolumeCredits(volumeCreditsFor(i)));
+    statementData.getPerformances().forEach(i -> i.updateAmount(PerformanceCalculator.amountFor(i)));
+    statementData.getPerformances().forEach(i -> i.updateVolumeCredits(PerformanceCalculator.volumeCreditsFor(i)));
   }
 
   private static String renderPlainText(StatementData statementData) {
@@ -60,41 +60,6 @@ public class RefactoringSample {
         .map(PerformanceVo::getVolumeCredits)
         .mapToInt(i -> i)
         .sum();
-  }
-
-  private static int volumeCreditsFor(PerformanceVo perf) {
-    int result = 0;
-    result += Math.max(perf.audience - 30, 0);
-    if ("comedy".equals(perf.getPlay().getType())) {
-      result += perf.audience / 5;
-    }
-    return result;
-  }
-
-  private static Play playFor(Map<String, Play> plays, Performance perf) {
-    return plays.get(perf.playId);
-  }
-
-  private static int amountFor(PerformanceVo perf) {
-    var result = 0;
-
-    switch (perf.getPlay().getType()) {
-      case "tragedy" -> {
-        result = 40000;
-        if (perf.audience > 30) {
-          result += 1000 * (perf.audience - 30);
-        }
-      }
-      case "comedy" -> {
-        result = 30000;
-        if (perf.audience > 20) {
-          result += 10000 + 500 * (perf.audience - 20);
-        }
-        result += 300 * perf.audience;
-      }
-      default -> throw new RuntimeException("알 수 없는 장르");
-    }
-    return result;
   }
 
   public static void main(String[] args) {
@@ -144,7 +109,7 @@ public class RefactoringSample {
     private int audience;
 
     public PerformanceVo createVo(Map<String, Play> plays, Performance performance) {
-      return new PerformanceVo(this.playId, this.audience, playFor(plays, performance), 0, 0);
+      return new PerformanceVo(this.playId, this.audience, PerformanceCalculator.playFor(plays, performance), 0, 0);
     }
   }
 
@@ -163,6 +128,43 @@ public class RefactoringSample {
 
     public void updateVolumeCredits(int volumeCredits) {
       this.volumeCredits = volumeCredits;
+    }
+  }
+
+  static class PerformanceCalculator {
+    static int volumeCreditsFor(PerformanceVo perf) {
+      int result = 0;
+      result += Math.max(perf.audience - 30, 0);
+      if ("comedy".equals(perf.getPlay().getType())) {
+        result += perf.audience / 5;
+      }
+      return result;
+    }
+
+    static Play playFor(Map<String, Play> plays, Performance perf) {
+      return plays.get(perf.playId);
+    }
+
+    static int amountFor(PerformanceVo perf) {
+      var result = 0;
+
+      switch (perf.getPlay().getType()) {
+        case "tragedy" -> {
+          result = 40000;
+          if (perf.audience > 30) {
+            result += 1000 * (perf.audience - 30);
+          }
+        }
+        case "comedy" -> {
+          result = 30000;
+          if (perf.audience > 20) {
+            result += 10000 + 500 * (perf.audience - 20);
+          }
+          result += 300 * perf.audience;
+        }
+        default -> throw new RuntimeException("알 수 없는 장르");
+      }
+      return result;
     }
   }
 }
