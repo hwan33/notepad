@@ -167,4 +167,12 @@ public class RefactoringSample {
       return result;
     }
   }
+
+  static class TragedyCalculator extends PerformanceCalculator {
+
+  }
+
+  static class ComedyCalculator extends PerformanceCalculator {
+
+  }
 }
