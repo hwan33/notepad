@@ -150,10 +150,7 @@ public class RefactoringSample {
 
       switch (perf.getPlay().getType()) {
         case "tragedy" -> {
-          result = 40000;
-          if (perf.audience > 30) {
-            result += 1000 * (perf.audience - 30);
-          }
+          return TragedyCalculator.amountFor(perf);
         }
         case "comedy" -> {
           result = 30000;
@@ -169,7 +166,12 @@ public class RefactoringSample {
   }
 
   static class TragedyCalculator extends PerformanceCalculator {
-
+    static int amountFor(PerformanceVo perf) {
+      if (perf.audience > 30) {
+        return 40000 + 1000 * (perf.audience - 30);
+      }
+      return 40000;
+    }
   }
 
   static class ComedyCalculator extends PerformanceCalculator {
